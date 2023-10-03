@@ -29,11 +29,11 @@ abb_t *insertar(abb_t *arbol, struct nodo_abb* actual, void * elemento)
 	}
 }
 
-void *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento)
+struct nodo_abb *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento)
 {
 
 	if(arbol->comparador(actual->elemento, elemento) == 0){
-		return actual->elemento;
+		return actual;
 	}
 	else if(arbol->comparador(actual->elemento, elemento) > 0){
 		if(actual->izquierda == NULL)
@@ -45,3 +45,21 @@ void *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento)
 		return NULL;
 	return buscar(arbol, actual->derecha, elemento);
 }
+
+struct nodo_abb *buscar_anterior(abb_t *arbol, struct nodo_abb* actual, void * elemento)
+{
+
+	if(arbol->comparador(actual->elemento, elemento) == 0){
+		return actual;
+	}
+	else if(arbol->comparador(actual->elemento, elemento) > 0){
+		if(actual->izquierda == NULL)
+			return NULL;
+		return buscar(arbol, actual->izquierda, elemento);
+	}
+
+	if(actual->derecha == NULL)
+		return NULL;
+	return buscar(arbol, actual->derecha, elemento);
+}
+

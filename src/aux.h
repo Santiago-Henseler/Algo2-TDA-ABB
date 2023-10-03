@@ -5,7 +5,6 @@
 
 abb_t *insertar(abb_t *arbol, struct nodo_abb* actual, void * elemento);
 
-void *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento);
-
+struct nodo_abb *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento);
 
 #endif // _AUX_H_

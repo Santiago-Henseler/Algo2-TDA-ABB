@@ -42,6 +42,11 @@ abb_t *abb_insertar(abb_t *arbol, void *elemento)
 
 void *abb_quitar(abb_t *arbol, void *elemento)
 {
+	if(arbol == NULL)
+		return NULL;
+
+
+
 	return elemento;
 }
 
@@ -50,7 +55,12 @@ void *abb_buscar(abb_t *arbol, void *elemento)
 	if(abb_vacio(arbol))
 		return NULL;
 
-	return buscar(arbol, arbol->nodo_raiz, elemento);
+	struct nodo_abb * encontrado = buscar(arbol, arbol->nodo_raiz, elemento);
+
+	if(encontrado == NULL)
+		return NULL;
+
+	return encontrado->elemento; 
 }
 
 bool abb_vacio(abb_t *arbol)
@@ -86,7 +96,39 @@ size_t abb_con_cada_elemento(abb_t *arbol, abb_recorrido recorrido,
 	return 0;
 }
 
+size_t recorrido_preorden(struct nodo_abb* actual, void **array, size_t recorridos, size_t tamanio_array){
+
+	struct nodo_abb** vector = (struct nodo_abb**)array;
+	vector[recorridos] = actual;
+
+	if(recorridos == tamanio_array)
+		return recorridos;
+	
+	if(actual->izquierda == NULL){
+		return recorrido_preorden(actual->derecha, array, recorridos+1, tamanio_array);
+	}else{
+		return recorrido_preorden(actual->izquierda, array, recorridos+1, tamanio_array);
+	}
+
+	if(actual->derecha == NULL){
+		return recorridos;
+	}else{
+		return recorrido_preorden(actual->derecha, array, recorridos+1, tamanio_array);
+	}
+}
+
 size_t abb_recorrer(abb_t *arbol, abb_recorrido recorrido, void **array, size_t tamanio_array)
 {
+	if(abb_vacio(arbol)){
+		return 0;
+	}
+	
+	if(recorrido == PREORDEN){
+		if(tamanio_array > abb_tamanio(arbol))
+			return recorrido_preorden(arbol->nodo_raiz, array, 0, abb_tamanio(arbol));
+		else
+			return recorrido_preorden(arbol->nodo_raiz, array, 0, tamanio_array);
+	}
+
 	return 0;
 }
