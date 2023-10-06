@@ -39,13 +39,20 @@ struct nodo_abb *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento)
 	return buscar(arbol, actual->derecha, elemento);
 }
 
+void destruir_iterativa(struct nodo_abb* actual){
+	if(actual == NULL)
+		return;
+	destruir_iterativa(actual->izquierda);
+	destruir_iterativa(actual->derecha);
+	free(actual);
+}
+
 void destruir_todo_iterativa(struct nodo_abb* actual, void (*destructor)(void *)){
 	if(actual == NULL)
 		return;
+	destructor(actual->elemento);
 	destruir_todo_iterativa(actual->izquierda, destructor);
 	destruir_todo_iterativa(actual->derecha, destructor);
-	if(destructor != NULL)
-		destructor(actual->elemento);
 	free(actual);
 }
 
@@ -63,13 +70,13 @@ bool aniadir_al_array(void *actual, void* array){
 	return true;
 }
 
-struct nodo_abb *ultimo_inorder(struct nodo_abb* actual){
-	if(actual->izquierda == NULL)
+struct nodo_abb * padre_predecesor_inorder(struct nodo_abb* actual){
+	if(actual->derecha->derecha == NULL)
 		return actual;
-	return ultimo_inorder(actual->izquierda);
+	return padre_predecesor_inorder(actual->derecha);
 }
 
-struct nodo_abb *reacomodar_al_quitar(struct nodo_abb* actual){
+struct nodo_abb *reacomodar_al_quitar(abb_t *arbol, struct nodo_abb* actual){
 	if(actual->izquierda == NULL && actual->derecha == NULL){	
 		return NULL;
 	}
@@ -80,17 +87,26 @@ struct nodo_abb *reacomodar_al_quitar(struct nodo_abb* actual){
 		return actual->izquierda;
 	}
 	else{
-		return ultimo_inorder(actual->derecha);
+		/*
+		struct nodo_abb* padre_predecesor = padre_predecesor_inorder(actual->izquierda);
+		struct nodo_abb* predecesor = padre_predecesor->derecha;
+		padre_predecesor->derecha = NULL;
+		padre_predecesor->izquierda = predecesor->izquierda;
+
+		actual->elemento = predecesor->elemento;*/
+		return actual;
 	}
+	return actual;
 }
 
 struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb* actual, almacenador_t * encontrado){
 
-	if(actual == NULL)
+	if(actual == NULL){
+		encontrado->elementos = NULL;
 		return NULL;
+	}
 
 	if(arbol->tamanio == 1){
-		arbol->nodo_raiz = NULL;
 		encontrado->elementos = actual->elemento;
 		return NULL;
 	}
@@ -99,7 +115,7 @@ struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb*
 
 	if(comparador == 0){
 		encontrado->elementos = actual->elemento;
-		return reacomodar_al_quitar(actual);
+		return reacomodar_al_quitar(arbol, actual);
 	}
 	if(comparador > 0){
 		actual->izquierda = quitar_recursivo(arbol, elemento, actual->izquierda, encontrado);

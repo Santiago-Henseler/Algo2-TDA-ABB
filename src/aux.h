@@ -16,6 +16,8 @@ struct nodo_abb *buscar(abb_t *arbol, struct nodo_abb* actual, void * elemento);
 
 void destruir_todo_iterativa(struct nodo_abb* actual, void (*destructor)(void *));
 
+void destruir_iterativa(struct nodo_abb* actual);
+
 bool aniadir_al_array(void *actual, void* array);
 
 struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb* actual, almacenador_t * encontrado);

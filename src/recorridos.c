@@ -7,15 +7,16 @@ bool recorrido_iterativo_preorden(struct nodo_abb* actual, bool (*funcion)(void 
 
 	if(actual == NULL)
 		return true;
+
+	(*recorridos)++;
 	
 	if(funcion(actual->elemento, aux) == false)
 		return false;
 	
-	(*recorridos)++;
 
 	if(recorrido_iterativo_preorden(actual->izquierda, funcion, aux, recorridos, maximo) == false)
 		return false;
-	
+
 	return recorrido_iterativo_preorden(actual->derecha, funcion, aux, recorridos, maximo);
 }
 
@@ -48,11 +49,11 @@ bool recorrido_iterativo_postorden(struct nodo_abb* actual, bool (*funcion)(void
 
 	if(recorrido_iterativo_postorden(actual->izquierda, funcion, aux, recorridos, maximo)== false)
 		return false;
-        
-	(*recorridos)++;
 
 	if(recorrido_iterativo_postorden(actual->derecha, funcion, aux, recorridos, maximo) == false)
 		return false;
+
+	(*recorridos)++;
 
 	return funcion(actual->elemento, aux);
 }

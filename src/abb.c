@@ -56,9 +56,10 @@ void *abb_quitar(abb_t *arbol, void *elemento)
 	almacenador_t almacenador;
 	almacenador.elementos = NULL;
 
-	quitar_recursivo(arbol, elemento, arbol->nodo_raiz, &almacenador);
-
-	arbol->tamanio--;
+	arbol->nodo_raiz = quitar_recursivo(arbol, elemento, arbol->nodo_raiz, &almacenador);
+	
+	if(almacenador.elementos != NULL)
+		arbol->tamanio--;
 	return almacenador.elementos;
 }
 
@@ -96,10 +97,11 @@ size_t abb_tamanio(abb_t *arbol)
 
 void abb_destruir(abb_t *arbol)
 {
-	if(arbol == NULL)
+	if(arbol == NULL){
 		return;
+	}
 
-	destruir_todo_iterativa(arbol->nodo_raiz, NULL);
+	destruir_iterativa(arbol->nodo_raiz);
 }
 
 void abb_destruir_todo(abb_t *arbol, void (*destructor)(void *))
