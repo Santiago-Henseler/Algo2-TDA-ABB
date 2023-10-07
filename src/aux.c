@@ -78,13 +78,18 @@ struct nodo_abb * padre_predecesor_inorder(struct nodo_abb* actual){
 
 struct nodo_abb *reacomodar_al_quitar(abb_t *arbol, struct nodo_abb* actual){
 	if(actual->izquierda == NULL && actual->derecha == NULL){	
+		free(actual);
 		return NULL;
 	}
 	if(actual->izquierda == NULL){
-		return actual->derecha;
+		struct nodo_abb * aux = actual->derecha;
+		free(actual);
+		return aux;
 	}
 	if(actual->derecha == NULL){
-		return actual->izquierda;
+		struct nodo_abb * aux = actual->izquierda;
+		free(actual);
+		return aux;
 	}
 	else{
 		if(actual->izquierda->derecha == NULL){
@@ -99,6 +104,7 @@ struct nodo_abb *reacomodar_al_quitar(abb_t *arbol, struct nodo_abb* actual){
 		padre_predecesor->derecha = predecesor->izquierda;
 
 		actual->elemento = predecesor->elemento;
+		free(predecesor);
 		return actual;
 	}
 	return actual;
