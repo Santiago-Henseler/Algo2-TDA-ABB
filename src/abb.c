@@ -6,12 +6,12 @@
 
 abb_t *abb_crear(abb_comparador comparador)
 {
-	if(comparador == NULL)
+	if (comparador == NULL)
 		return NULL;
-	
-	struct abb *arbol = calloc(1, sizeof(struct abb ));
 
-	if(arbol == NULL)
+	struct abb *arbol = calloc(1, sizeof(struct abb));
+
+	if (arbol == NULL)
 		return NULL;
 
 	arbol->comparador = comparador;
@@ -21,16 +21,16 @@ abb_t *abb_crear(abb_comparador comparador)
 
 abb_t *abb_insertar(abb_t *arbol, void *elemento)
 {
-	if(arbol == NULL)
+	if (arbol == NULL)
 		return NULL;
 
-	if(abb_tamanio(arbol) == 0){
-		struct nodo_abb *raiz = calloc(1, sizeof(struct nodo_abb ));
+	if (abb_tamanio(arbol) == 0) {
+		struct nodo_abb *raiz = calloc(1, sizeof(struct nodo_abb));
 
-		if(raiz == NULL)
+		if (raiz == NULL)
 			return NULL;
 
-		arbol->nodo_raiz = raiz; 
+		arbol->nodo_raiz = raiz;
 		arbol->nodo_raiz->elemento = elemento;
 		arbol->tamanio++;
 		return arbol;
@@ -40,24 +40,25 @@ abb_t *abb_insertar(abb_t *arbol, void *elemento)
 
 	insertar_recursivo(arbol, arbol->nodo_raiz, elemento, &insertado);
 
-	if(insertado)
+	if (insertado)
 		return arbol;
-	
+
 	return NULL;
 }
 
 void *abb_quitar(abb_t *arbol, void *elemento)
 {
-	if(abb_vacio(arbol))
+	if (abb_vacio(arbol))
 		return NULL;
 
 	almacenador_t almacenador;
 	almacenador.elementos = NULL;
 	almacenador.total = 0;
 
-	arbol->nodo_raiz = quitar_recursivo(arbol, elemento, arbol->nodo_raiz, &almacenador);
-	
-	if(almacenador.total == 1){
+	arbol->nodo_raiz = quitar_recursivo(arbol, elemento, arbol->nodo_raiz,
+					    &almacenador);
+
+	if (almacenador.total == 1) {
 		arbol->tamanio--;
 		return almacenador.elementos;
 	}
@@ -67,23 +68,23 @@ void *abb_quitar(abb_t *arbol, void *elemento)
 
 void *abb_buscar(abb_t *arbol, void *elemento)
 {
-	if(abb_vacio(arbol))
+	if (abb_vacio(arbol))
 		return NULL;
 
-	struct nodo_abb * encontrado = buscar(arbol, arbol->nodo_raiz, elemento);
+	struct nodo_abb *encontrado = buscar(arbol, arbol->nodo_raiz, elemento);
 
-	if(encontrado == NULL)
+	if (encontrado == NULL)
 		return NULL;
 
-	return encontrado->elemento; 
+	return encontrado->elemento;
 }
 
 bool abb_vacio(abb_t *arbol)
 {
-	if(arbol == NULL)
+	if (arbol == NULL)
 		return true;
-	
-	if(arbol->tamanio == 0)
+
+	if (arbol->tamanio == 0)
 		return true;
 
 	return false;
@@ -91,7 +92,7 @@ bool abb_vacio(abb_t *arbol)
 
 size_t abb_tamanio(abb_t *arbol)
 {
-	if(arbol == NULL)
+	if (arbol == NULL)
 		return 0;
 
 	return arbol->tamanio;
@@ -99,7 +100,7 @@ size_t abb_tamanio(abb_t *arbol)
 
 void abb_destruir(abb_t *arbol)
 {
-	if(arbol == NULL){
+	if (arbol == NULL) {
 		return;
 	}
 
@@ -109,39 +110,44 @@ void abb_destruir(abb_t *arbol)
 
 void abb_destruir_todo(abb_t *arbol, void (*destructor)(void *))
 {
-	if(destructor == NULL)
+	if (destructor == NULL)
 		free(arbol);
 
-	if(arbol == NULL || destructor == NULL)
+	if (arbol == NULL || destructor == NULL)
 		return;
 
 	destruir_todo_iterativa(arbol->nodo_raiz, destructor);
 	free(arbol);
 }
 
-size_t abb_con_cada_elemento(abb_t *arbol, abb_recorrido recorrido, bool (*funcion)(void *, void *), void *aux)
+size_t abb_con_cada_elemento(abb_t *arbol, abb_recorrido recorrido,
+			     bool (*funcion)(void *, void *), void *aux)
 {
-	if(abb_vacio(arbol) || funcion == NULL){
+	if (abb_vacio(arbol) || funcion == NULL) {
 		return 0;
 	}
 
 	size_t recorridos = 0;
 
-	if(recorrido == PREORDEN)
-		recorrido_iterativo_preorden(arbol->nodo_raiz, funcion, aux, &recorridos, arbol->tamanio);
+	if (recorrido == PREORDEN)
+		recorrido_iterativo_preorden(arbol->nodo_raiz, funcion, aux,
+					     &recorridos, arbol->tamanio);
 
-	if(recorrido == INORDEN)
-		recorrido_iterativo_inorden(arbol->nodo_raiz, funcion, aux, &recorridos, arbol->tamanio);
+	if (recorrido == INORDEN)
+		recorrido_iterativo_inorden(arbol->nodo_raiz, funcion, aux,
+					    &recorridos, arbol->tamanio);
 
-	if(recorrido == POSTORDEN)
-		recorrido_iterativo_postorden(arbol->nodo_raiz, funcion, aux, &recorridos, arbol->tamanio);
+	if (recorrido == POSTORDEN)
+		recorrido_iterativo_postorden(arbol->nodo_raiz, funcion, aux,
+					      &recorridos, arbol->tamanio);
 
 	return recorridos;
 }
 
-size_t abb_recorrer(abb_t *arbol, abb_recorrido recorrido, void **array, size_t tamanio_array)
+size_t abb_recorrer(abb_t *arbol, abb_recorrido recorrido, void **array,
+		    size_t tamanio_array)
 {
-	if(arbol == NULL || array == NULL)
+	if (arbol == NULL || array == NULL)
 		return 0;
 
 	almacenador_t almacenador;
