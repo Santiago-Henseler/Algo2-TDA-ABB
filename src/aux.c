@@ -3,13 +3,13 @@
 struct nodo_abb *insertar_recursivo(abb_t *arbol, struct nodo_abb* actual, void * elemento, bool *insertado)
 {
 	if(actual == NULL){
-		actual = calloc(1, sizeof(struct nodo_abb ));
-		if(actual == NULL)
+		struct nodo_abb* nuevo_nodo = calloc(1, sizeof(struct nodo_abb ));
+		if(nuevo_nodo == NULL)
 			return NULL;
 		*insertado = true;
-		actual->elemento = elemento;
+		nuevo_nodo->elemento = elemento;
 		arbol->tamanio++;
-		return actual;
+		return nuevo_nodo;
 	}
 
 	int comparador = arbol->comparador(actual->elemento, elemento);
@@ -87,40 +87,46 @@ struct nodo_abb *reacomodar_al_quitar(abb_t *arbol, struct nodo_abb* actual){
 		return actual->izquierda;
 	}
 	else{
-		/*
+		if(actual->izquierda->derecha == NULL){
+			actual->elemento = actual->izquierda->elemento;
+			struct nodo_abb* aux = actual->izquierda;
+			actual->izquierda = actual->izquierda->izquierda;
+			free(aux);
+			return actual;
+		}
 		struct nodo_abb* padre_predecesor = padre_predecesor_inorder(actual->izquierda);
 		struct nodo_abb* predecesor = padre_predecesor->derecha;
-		padre_predecesor->derecha = NULL;
-		padre_predecesor->izquierda = predecesor->izquierda;
+		padre_predecesor->derecha = predecesor->izquierda;
 
-		actual->elemento = predecesor->elemento;*/
+		actual->elemento = predecesor->elemento;
 		return actual;
 	}
 	return actual;
 }
 
-struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb* actual, almacenador_t * encontrado){
+struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb* actual, almacenador_t * almacenador){
 
 	if(actual == NULL){
-		encontrado->elementos = NULL;
-		return NULL;
-	}
-
-	if(arbol->tamanio == 1){
-		encontrado->elementos = actual->elemento;
+		almacenador->elementos = NULL;
 		return NULL;
 	}
 
 	int comparador = arbol->comparador(actual->elemento, elemento);
 
 	if(comparador == 0){
-		encontrado->elementos = actual->elemento;
+		if(arbol->tamanio == 1){
+			almacenador->elementos = actual->elemento;
+			almacenador->total = 1;
+			return NULL;
+		}
+		almacenador->elementos = actual->elemento;
+		almacenador->total = 1;
 		return reacomodar_al_quitar(arbol, actual);
 	}
 	if(comparador > 0){
-		actual->izquierda = quitar_recursivo(arbol, elemento, actual->izquierda, encontrado);
+		actual->izquierda = quitar_recursivo(arbol, elemento, actual->izquierda, almacenador);
 	}else{
-		actual->derecha = quitar_recursivo(arbol, elemento, actual->derecha, encontrado);
+		actual->derecha = quitar_recursivo(arbol, elemento, actual->derecha, almacenador);
 	}
 
 	return actual;

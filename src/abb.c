@@ -55,12 +55,16 @@ void *abb_quitar(abb_t *arbol, void *elemento)
 
 	almacenador_t almacenador;
 	almacenador.elementos = NULL;
+	almacenador.total = 0;
 
 	arbol->nodo_raiz = quitar_recursivo(arbol, elemento, arbol->nodo_raiz, &almacenador);
 	
-	if(almacenador.elementos != NULL)
+	if(almacenador.total == 1){
 		arbol->tamanio--;
-	return almacenador.elementos;
+		return almacenador.elementos;
+	}
+
+	return NULL;
 }
 
 void *abb_buscar(abb_t *arbol, void *elemento)
