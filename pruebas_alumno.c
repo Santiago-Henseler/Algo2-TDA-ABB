@@ -230,7 +230,7 @@ void TamanioorrectoArbolInvalido()
 
 int main()
 {
-	a();
+	
 	pa2m_nuevo_grupo(
 		"\n======================== CREAR ARBOL ========================");
 	creoUnArbolConComparadorNoNuloYSeCrea();
