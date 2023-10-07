@@ -3,7 +3,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "aux.h"
+#include "funcionalidades.h"
+#include "borrador.h"
 #include "recorridos.h"
 
 abb_t *abb_crear(abb_comparador comparador)
@@ -105,7 +106,7 @@ void abb_destruir(abb_t *arbol)
 		return;
 	}
 
-	destruir_iterativa(arbol->nodo_raiz);
+	destruir_todo_iterativa(arbol->nodo_raiz, NULL);
 	free(arbol);
 }
 
