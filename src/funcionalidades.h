@@ -1,6 +1,9 @@
 #ifndef _FUNCIONALIDADES_H_
 #define _FUNCIONALIDADES_H_
 
+#include <stddef.h>
+#include <stdlib.h>
+
 #include "abb.h"
 #include "abb_estructura_privada.h"
 

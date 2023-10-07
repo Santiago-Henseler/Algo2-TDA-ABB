@@ -1,7 +1,4 @@
 #include "abb.h"
-#include "abb_estructura_privada.h"
-#include <stddef.h>
-#include <stdlib.h>
 
 #include "funcionalidades.h"
 #include "borrador.h"
@@ -112,6 +109,9 @@ void abb_destruir(abb_t *arbol)
 
 void abb_destruir_todo(abb_t *arbol, void (*destructor)(void *))
 {
+	if(destructor == NULL)
+		free(arbol);
+
 	if(arbol == NULL || destructor == NULL)
 		return;
 
