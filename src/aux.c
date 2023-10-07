@@ -123,6 +123,7 @@ struct nodo_abb *quitar_recursivo(abb_t *arbol, void *elemento, struct nodo_abb*
 		if(arbol->tamanio == 1){
 			almacenador->elementos = actual->elemento;
 			almacenador->total = 1;
+			free(actual);
 			return NULL;
 		}
 		almacenador->elementos = actual->elemento;
