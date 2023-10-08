@@ -138,14 +138,45 @@ Planteo la siguiente ecuación: `T(n) = 1T(n/2) + O(1)`. Entonces tiene una comp
 
 Planteo la siguiente ecuación: `T(n) = 1T(n/2) + O(1)`. Entonces tiene una complejidad de log(n) porque: `c = n^logb(a) = n^log2(1) = n^0 = 1 ==> c = o(1)`. <=> el nodo a borrar tiene un solo hijo o ninguno. Porque si tiene 2 hijos la complejidad de la funcion `reacomodar_al_quitar()` se transforma en o(n) => `T(n) = log(n) + O(n)` y su complejidad escala a o(n).
 
+- `abb_destruir()` y `abb_destruir_todo()`: Ambas funciones llaman a `destruir_todo_iterativa()` que recorre recursivamente el arbol de manera postorden haciendo `free()` de cada nodo y ademas en el caso de `abb_destruir_todo()` le aplica una funcion pasada por parametro a cada elemento del arbol.
 
+*analisis de complejidad*:
+  ```c
+{
+	if (actual == NULL)
+		return;
+	if (destructor != NULL)
+		destructor(actual->elemento); --> 1
+	destruir_todo_iterativa(actual->izquierda, destructor);
+	destruir_todo_iterativa(actual->derecha, destructor);
+	free(actual);
+}
+```
+En este caso la complejidad de esta función es o(n) ya que tiene que recorrer todo el arbol y vaciar la memoria uno por uno.
 
+- `abb_con_cada_elemento()` y `abb_recorrer()`: Ambas funciones se manejan parecido. Recorren el arbol de manera preorder, inorder o postorden segun se lo indique el usuario y sigue recorriendolo mientras la funcion pasada por parametro sigua devolviendo True. Una vez termine de recorrer devuelve la cantidad de iteraciónes. Ademas la función `abb_recorrer()` llena un array con los elementos que recorre. Para implementar esto cree un nuevo struct llamado almacenador donde guardo los elementos pedidos y la cantidad de elementos iterados.
+```c
+  typedef struct almacenador {
+	void **elementos;
+	size_t cantidad;
+	size_t total;
+} almacenador_t; 
+```
+*analisis de complejidad*:
 
+```c
+	if (*recorridos == maximo)
+		return false;
+	if (actual == NULL)
+		return true;
+	(*recorridos)++;
+	if (funcion(actual->elemento, aux) == false)
+		return false;
+	if (recorrido_iterativo_preorden(actual->izquierda, funcion, aux, recorridos, maximo) == false)
+		return false;
 
+	return recorrido_iterativo_preorden(actual->derecha, funcion, aux, recorridos, maximo);
+```
+En este caso la complejidad de esta función es o(n) ya que tiene que recorrer uno por uno todo el arbol.
 
-
-
-
-
-
-Los analisis de complejidad se cumplen considerando que el arbol se mantiene balanceado porque sino, degenera en lista y las operaciones pasarian a ser o(n).
+Los analisis de complejidad se cumplen considerando que el arbol se mantiene balanceado porque sino, degenera en lista y las operaciones que no son O(n) pasarian a serlo.
