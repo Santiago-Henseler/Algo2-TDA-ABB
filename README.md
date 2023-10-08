@@ -66,9 +66,9 @@ Para poder implementar todas las funcionalidades del A.B.B. hice uso de la recur
 
 - `abb_crear()` : crea el A.B.B. e inizializa todo en 0.
 
-- `abb_insertar()` : recorre el arbol comparando si el elemento a colocar es mayor o menor al actual y decide si ir hacia la derecha o izquierda según ese resultado. Cuando llega a una rama vacia (NULL) reserva memoria para el nuevo nodo y lo inserta en esa posición.
+- `abb_insertar()` : recorre el arbol comparando si el elemento a colocar es mayor o menor al actual y decide si ir hacia la derecha o izquierda según ese resultado. Cuando llega a una rama vacia (NULL) reserva memoria para el nuevo nodo y lo inserta en esa posición. Para mi implementación decidi que si un elemento es igual lo añiado a la izquierda.
 
-  *analisis de complejidad*:
+*analisis de complejidad*:
 
   ```c
 	if (actual == NULL) {
@@ -90,6 +90,62 @@ Para poder implementar todas las funcionalidades del A.B.B. hice uso de la recur
 
 Planteo la siguiente ecuación: `T(n) = 1T(n/2) + O(1)`. Entonces tiene una complejidad de log(n) porque: `c = n^logb(a) = n^log2(1) = n^0 = 1 ==> c = o(1)`.
 
+- `abb_buscar()` : recorre el arbol comparando si el elemento es mayor o menor al actual y decide si ir hacia la derecha o izquierda según ese resultado. Cuando el elemento actual es igual al buscado lo devuelve.
+  
+*analisis de complejidad*:
+
+```c
+	if (arbol->comparador(actual->elemento, elemento) == 0) {
+		return actual;
+	} else if (arbol->comparador(actual->elemento, elemento) > 0) {
+		if (actual->izquierda == NULL)
+			return NULL;
+		return buscar(arbol, actual->izquierda, elemento);
+	}
+
+	if (actual->derecha == NULL)
+		return NULL;
+	return buscar(arbol, actual->derecha, elemento);
+```
+
+Planteo la siguiente ecuación: `T(n) = 1T(n/2) + O(1)`. Entonces tiene una complejidad de log(n) porque: `c = n^logb(a) = n^log2(1) = n^0 = 1 ==> c = o(1)`.
+
+- `abb_quitar()` : recorre el arbol comparando si el elemento es mayor o menor al elemento a eliminar y decide si ir hacia la derecha o izquierda según ese resultado. Cuando el elemento actual es igual al buscado llama a la funcion `reacomodar_al_quitar()` que verifica como es la distribucion de los nodos hijos del elemento eliminado y los reacomoda siguiendo una serie de parametros para que el arbol siga manteniendo su coherencia.
+  
+*analisis de complejidad*:
+
+```c
+	int comparador = arbol->comparador(actual->elemento, elemento);
+	if (comparador == 0) {
+		if (arbol->tamanio == 1) {
+			almacenador->elementos = actual->elemento; --> 1
+			almacenador->total = 1; --> 1
+			free(actual); --> 1
+			return NULL;
+		}
+		almacenador->elementos = actual->elemento;--> 1
+		almacenador->total = 1;--> 1
+		return reacomodar_al_quitar(arbol, actual);--> o(1) | o(n)
+	}
+	if (comparador > 0) {
+		actual->izquierda = quitar_recursivo(arbol, elemento, actual->izquierda, almacenador);
+	} else {
+		actual->derecha = quitar_recursivo(arbol, elemento, actual->derecha, almacenador);
+	}
+	return actual;
+}
+```
+
+Planteo la siguiente ecuación: `T(n) = 1T(n/2) + O(1)`. Entonces tiene una complejidad de log(n) porque: `c = n^logb(a) = n^log2(1) = n^0 = 1 ==> c = o(1)`. <=> el nodo a borrar tiene un solo hijo o ninguno. Porque si tiene 2 hijos la complejidad de la funcion `reacomodar_al_quitar()` se transforma en o(n) => `T(n) = log(n) + O(n)` y su complejidad escala a o(n).
 
 
 
+
+
+
+
+
+
+
+
+Los analisis de complejidad se cumplen considerando que el arbol se mantiene balanceado porque sino, degenera en lista y las operaciones pasarian a ser o(n).
